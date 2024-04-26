@@ -1,6 +1,6 @@
 name: 'Get Ninja'
 description: 'Installs Ninja'
-author: 'TurtleSec'
+author: 'Igara Studio S.A.'
 outputs:
   version:
     description: "The version of Ninja which was installed"
