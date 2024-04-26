@@ -30,18 +30,22 @@ if ! $wget -q "https://github.com/ninja-build/ninja/releases/download/v1.12.0/$f
     exit 2
 fi
 
-# We do our own SHA512 check as on Windows it looks like sha512sum
-# --check is not working.
-expected=$(cat checksums.txt | grep $filename | cut -d ' ' -f 1)
-actual=$($checksum $filename | cut -d ' ' -f 1)
-echo expected SHA512 $expected $filename
-echo actual SHA512 $actual $filename
-if [[ "$expected" == "" || "$actual" == "" || "$expected" != "$actual" ]] ; then
-    echo "Invalid SHA512 checksum"
-    exit 3
-fi
+echo GITHUB_ACTION_PATH = $(cygpath -u $GITHUB_ACTION_PATH)
+echo pwd = $(pwd)/
 
-if [ "$RUNNER_OS" != "Windows" ]; then
+# We do our own SHA512 check on Windows when running get-ninja
+# actions, as it looks like sha512sum --check is not working in that
+# specific case.
+if [[ "$RUNNER_OS" == "Windows" && $(cygpath -u $GITHUB_ACTION_PATH) == $(pwd)/ ]]; then
+    expected=$(cat checksums.txt | grep $filename | cut -d ' ' -f 1)
+    actual=$($checksum $filename | cut -d ' ' -f 1)
+    echo expected SHA512 $expected $filename
+    echo actual SHA512 $actual $filename
+    if [[ "$expected" == "" || "$actual" == "" || "$expected" != "$actual" ]] ; then
+	echo "Invalid SHA512 checksum"
+	exit 3
+    fi
+else
     if ! $checksum --ignore-missing --check $GITHUB_ACTION_PATH/checksums.txt ; then
         echo "Invalid SHA512 checksum"
         exit 4
