@@ -19,7 +19,7 @@ runs:
       run: echo $env:PATH
       shell: pwsh
     - name: Show path pwsh
-      run: echo $env:PATH
+      run: echo $PATH
       shell: bash
     - name: Fill in output variable
       id: output_version
