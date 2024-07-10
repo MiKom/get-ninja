@@ -18,6 +18,7 @@ runs:
     - name: Fix path (Windows)
       if: runner.os == 'Windows'
       run: echo "$env:HOME\.local\bin" >> $GITHUB_PATH
+      shell: pwsh
     - name: Fill in output variable
       id: output_version
       shell: bash
