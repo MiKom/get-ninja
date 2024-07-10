@@ -11,9 +11,13 @@ runs:
     - name: Install on Mac/Linux/Windows
       run: bash $GITHUB_ACTION_PATH/install-ninja.sh
       shell: bash
-    - name: Fix path
+    - name: Fix path (Unix)
+      if: runner.os != 'Windows'
       run: echo "$HOME/.local/bin" >> $GITHUB_PATH
       shell: bash
+    - name: Fix path (Windows)
+      if: runner.os == 'Windows'
+      run: echo "$env:HOME\.local\bin" >> $GITHUB_PATH
     - name: Fill in output variable
       id: output_version
       shell: bash
